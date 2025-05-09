@@ -5,6 +5,8 @@ import {
     ShoppingBasket,
     Star,
     UserSquare,
+    Package,
+    LineChart
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,24 +26,34 @@ const adminSidebarMenuItems = [
         icon: <ShoppingBasket />,
     },
     {
+        id: "combo",
+        label: "Combo",
+        path: "/admin/combo",
+        icon: <Package />,
+    },
+    {
         id: "orders",
         label: "Orders",
         path: "/admin/orders",
         icon: <BadgeCheck />,
     },
-    // boor sung theem
     {
         id: "users",
         label: "Users",
         path: "/admin/users",
         icon: <UserSquare />,
-        
     },
     {
         id: "reviews",
         label: "Reviews",
         path: "/admin/reviews",
         icon: <Star />,
+    },
+    {
+        id: "revenue",
+        label: "Revenue Statistics",
+        path: "/admin/revenue",
+        icon: <LineChart />,
     }
 ];
 

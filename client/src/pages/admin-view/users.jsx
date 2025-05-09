@@ -62,6 +62,25 @@ function AdminUsers() {
         setOpenUserDetailsDialog(true);
     };
 
+    // Function to handle adding new user
+    const handleAddNewUser = () => {
+        // TODO: Implement add new user functionality
+        toast({
+            title: "Add New User",
+            description: "This feature will be implemented soon.",
+        });
+    };
+
+    // Function to handle deleting a user
+    const handleDeleteUser = (userId) => {
+        // TODO: Implement delete user functionality
+        setUserList((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        toast({
+            title: "User Deleted",
+            description: "User has been successfully removed.",
+        });
+    };
+
     // useEffect(() => {
     //     // TODO: Fetch users from your API
     //     // dispatch(fetchAllUsers());
@@ -71,11 +90,14 @@ function AdminUsers() {
         <Fragment>
             <div className="container mx-auto py-6">
                 <Card className="mb-6">
-                    <CardHeader>
-                        <CardTitle>Users Management</CardTitle>
-                        <CardDescription>
-                            View and manage all registered users in the system
-                        </CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Users Management</CardTitle>
+                            <CardDescription>
+                                View and manage all registered users in the system
+                            </CardDescription>
+                        </div>
+                        <Button onClick={handleAddNewUser}>Add New User</Button>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -99,12 +121,18 @@ function AdminUsers() {
                                         <TableCell>
                                             {new Date(user.createdAt).toLocaleDateString()}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="space-x-2">
                                             <Button
                                                 variant="outline"
                                                 onClick={() => handleViewUserDetails(user)}
                                             >
                                                 View Details
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => handleDeleteUser(user.id)}
+                                            >
+                                                Delete
                                             </Button>
                                         </TableCell>
                                     </TableRow>

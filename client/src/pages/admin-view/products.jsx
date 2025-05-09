@@ -24,7 +24,6 @@ const initialFormData = {
     title: "",
     description: "",
     category: "",
-    brand: "",
     price: "",
     salePrice: "",
     totalStock: "",
@@ -90,10 +89,8 @@ function AdminProducts() {
     }
 
     function isFormValid() {
-        return Object.keys(formData)
-            .filter((currentKey) => currentKey !== "averageReview")
-            .map((key) => formData[key] !== "")
-            .every((item) => item);
+        const requiredFields = ['title', 'description', 'category', 'price', 'totalStock'];
+        return requiredFields.every(field => formData[field] !== "");
     }
 
     useEffect(() => {

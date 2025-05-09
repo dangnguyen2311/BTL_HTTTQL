@@ -5,11 +5,16 @@ import bannerThree from "../../assets/banner-3.webp";
 import {
     Airplay,
     BabyIcon,
+    CakeSlice,
+    ChefHat,
     ChevronLeftIcon,
     ChevronRightIcon,
     CloudLightning,
+    Drumstick,
     Heater,
+    IceCreamCone,
     Images,
+    Pizza,
     Shirt,
     ShirtIcon,
     ShoppingBasket,
@@ -32,21 +37,21 @@ import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
-    { id: "men", label: "Men", icon: ShirtIcon },
-    { id: "women", label: "Women", icon: CloudLightning },
-    { id: "kids", label: "Kids", icon: BabyIcon },
-    { id: "accessories", label: "Accessories", icon: WatchIcon },
-    { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+    { id: "fried-chicken", label: "Gà rán", icon: Drumstick },
+    { id: "pizza", label: "Pizza", icon: Pizza },
+    { id: "noodle", label: "Mỳ Ý", icon: ChefHat },
+    { id: "dessert", label: "Món tráng miệng", icon: CakeSlice },
+    { id: "icecream", label: "Kem", icon: IceCreamCone },
 ];
 
-const brandsWithIcon = [
-    { id: "nike", label: "Nike", icon: Shirt },
-    { id: "adidas", label: "Adidas", icon: WashingMachine },
-    { id: "puma", label: "Puma", icon: ShoppingBasket },
-    { id: "levi", label: "Levi's", icon: Airplay },
-    { id: "zara", label: "Zara", icon: Images },
-    { id: "h&m", label: "H&M", icon: Heater },
-];
+// const brandsWithIcon = [
+//     { id: "nike", label: "Nike", icon: Shirt },
+//     { id: "adidas", label: "Adidas", icon: WashingMachine },
+//     { id: "puma", label: "Puma", icon: ShoppingBasket },
+//     { id: "levi", label: "Levi's", icon: Airplay },
+//     { id: "zara", label: "Zara", icon: Images },
+//     { id: "h&m", label: "H&M", icon: Heater },
+// ];
 function ShoppingHome() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { productList, productDetails } = useSelector(
@@ -122,7 +127,7 @@ function ShoppingHome() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="relative w-full h-[600px] overflow-hidden">
+            {/* <div className="relative w-full h-[600px] overflow-hidden">
                 {featureImageList && featureImageList.length > 0
                     ? featureImageList.map((slide, index) => (
                         <img
@@ -159,7 +164,7 @@ function ShoppingHome() {
                 >
                     <ChevronRightIcon className="w-4 h-4" />
                 </Button>
-            </div>
+            </div> */}
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">
@@ -168,6 +173,7 @@ function ShoppingHome() {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         {categoriesWithIcon.map((categoryItem) => (
                             <Card
+                                key={categoryItem.id}
                                 onClick={() =>
                                     handleNavigateToListingPage(categoryItem, "category")
                                 }
@@ -183,7 +189,7 @@ function ShoppingHome() {
                 </div>
             </section>
 
-            <section className="py-12 bg-gray-50">
+            {/* <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -200,7 +206,7 @@ function ShoppingHome() {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="py-12">
                 <div className="container mx-auto px-4">
@@ -211,6 +217,7 @@ function ShoppingHome() {
                         {productList && productList.length > 0
                             ? productList.map((productItem) => (
                                 <ShoppingProductTile
+                                    key={productItem._id}
                                     handleGetProductDetails={handleGetProductDetails}
                                     product={productItem}
                                     handleAddtoCart={handleAddtoCart}

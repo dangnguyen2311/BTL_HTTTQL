@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -5,6 +6,7 @@ const cors = require("cors");
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
+const adminComboRouter = require("./routes/admin/combo-routes");
 
 const shopProductsRouter = require("./routes/shop/products-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
@@ -19,7 +21,8 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 //create a separate file for this and then import/use that file here
 
 mongoose
-    .connect("mongodb+srv://trankhanhhgvt:rwRKpbZCWCuot4pN@cluster0.ssefj.mongodb.net/")
+.connect("mongodb+srv://nguyenquanghaidang2311:Dangdeptrai2311@food-ordering-managemen.2osml.mongodb.net/?retryWrites=true&w=majority&appName=food-ordering-management")
+    // .connect("mongodb+srv://trankhanhhgvt:rwRKpbZCWCuot4pN@cluster0.ssefj.mongodb.net/")
     
     .then(() => console.log("MongoDB connected"))
     .catch((error) => console.log(error));
@@ -47,6 +50,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/admin/combo", adminComboRouter);
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
