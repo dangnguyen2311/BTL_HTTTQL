@@ -1,5 +1,26 @@
 {
+  "name": "btl_htttql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dangnguyen2311/BTL_HTTTQL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dangnguyen2311/BTL_HTTTQL/issues"
+  },
+  "homepage": "https://github.com/dangnguyen2311/BTL_HTTTQL#readme",
+  "description": "",
   "dependencies": {
-    "date-fns": "^4.1.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.0"
   }
 }
