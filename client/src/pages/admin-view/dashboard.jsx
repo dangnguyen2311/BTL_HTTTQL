@@ -1,60 +1,78 @@
-import ProductImageUpload from "@/components/admin-view/image-upload";
-import { Button } from "@/components/ui/button";
-import { addFeatureImage, getFeatureImages } from "@/store/common-slice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Package, ShoppingBasket, Star } from "lucide-react";
+import { fetchAllProducts } from "@/store/admin/products-slice";
+import { fetchAllCombos } from "@/store/admin/combo-slice";
 
 function AdminDashboard() {
-    const [imageFile, setImageFile] = useState(null);
-    const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-    const [imageLoadingState, setImageLoadingState] = useState(false);
     const dispatch = useDispatch();
-    const { featureImageList } = useSelector((state) => state.commonFeature);
-
-    console.log(uploadedImageUrl, "uploadedImageUrl");
-
-    function handleUploadFeatureImage() {
-        dispatch(addFeatureImage(uploadedImageUrl)).then((data) => {
-            if (data?.payload?.success) {
-                dispatch(getFeatureImages());
-                setImageFile(null);
-                setUploadedImageUrl("");
-            }
-        });
-    }
+    const { productList } = useSelector((state) => state.adminProducts);
+    const { comboList } = useSelector((state) => state.adminCombo);
+    const [stats, setStats] = useState({
+        products: "Can't show",
+        combos: "Can't show",
+        reviews: "Can't show"
+    });
 
     useEffect(() => {
-        dispatch(getFeatureImages());
+        // Fetch data when component mounts
+        dispatch(fetchAllProducts());
+        dispatch(fetchAllCombos());
     }, [dispatch]);
 
-    console.log(featureImageList, "featureImageList");
+    useEffect(() => {
+        // Update stats when data is available
+        if (productList) {
+            setStats(prev => ({
+                ...prev,
+                products: productList.length
+            }));
+        }
+        if (comboList) {
+            setStats(prev => ({
+                ...prev,
+                combos: comboList.length
+            }));
+        }
+    }, [productList, comboList]);
 
     return (
-        <div>
-            <ProductImageUpload
-                imageFile={imageFile}
-                setImageFile={setImageFile}
-                uploadedImageUrl={uploadedImageUrl}
-                setUploadedImageUrl={setUploadedImageUrl}
-                setImageLoadingState={setImageLoadingState}
-                imageLoadingState={imageLoadingState}
-                isCustomStyling={true}
-            // isEditMode={currentEditedId !== null}
-            />
-            <Button onClick={handleUploadFeatureImage} className="mt-5 w-full">
-                Upload
-            </Button>
-            <div className="flex flex-col gap-4 mt-5">
-                {featureImageList && featureImageList.length > 0
-                    ? featureImageList.map((featureImgItem) => (
-                        <div className="relative">
-                            <img
-                                src={featureImgItem.image}
-                                className="w-full h-[300px] object-cover rounded-t-lg"
-                            />
-                        </div>
-                    ))
-                    : null}
+        <div className="container mx-auto py-6">
+            <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
+            <div className="grid gap-4 md:grid-cols-3">
+                {/* Products Stats */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                        <ShoppingBasket className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.products}</div>
+                    </CardContent>
+                </Card>
+
+                {/* Combos Stats */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Combos</CardTitle>
+                        <Package className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.combos}</div>
+                    </CardContent>
+                </Card>
+
+                {/* Reviews Stats */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
+                        <Star className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.reviews}</div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

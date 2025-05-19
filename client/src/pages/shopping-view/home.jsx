@@ -42,6 +42,7 @@ const categoriesWithIcon = [
     { id: "noodle", label: "Mỳ Ý", icon: ChefHat },
     { id: "dessert", label: "Món tráng miệng", icon: CakeSlice },
     { id: "icecream", label: "Kem", icon: IceCreamCone },
+    { id: "drink", label: "Thức uống", icon: UmbrellaIcon },
 ];
 
 // const brandsWithIcon = [
@@ -170,7 +171,7 @@ function ShoppingHome() {
                     <h2 className="text-3xl font-bold text-center mb-8">
                         Shop by category
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
                         {categoriesWithIcon.map((categoryItem) => (
                             <Card
                                 key={categoryItem.id}

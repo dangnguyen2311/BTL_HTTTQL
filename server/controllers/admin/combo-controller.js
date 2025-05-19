@@ -71,7 +71,7 @@ exports.getComboById = async (req, res) => {
 // Update combo
 exports.updateCombo = async (req, res) => {
     try {
-        const { name, description, price, products } = req.body;
+        const { name, description, price, products, image, totalStock, salePrice } = req.body;
         
         const updatedCombo = await Combo.findByIdAndUpdate(
             req.params.id,
@@ -79,7 +79,10 @@ exports.updateCombo = async (req, res) => {
                 name,
                 description,
                 price,
-                products
+                products,
+                image,
+                totalStock,
+                salePrice
             },
             { new: true, runValidators: true }
         ).populate('products');

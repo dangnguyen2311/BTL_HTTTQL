@@ -62,7 +62,8 @@ export const addProductFormElements = [
             { id: "pizza", label: "Pizza" },
             { id: "noodle", label: "Mỳ Ý" },
             { id: "dessert", label: "Món tráng miệng" },
-            { id: "icecream", label: "Kem" }
+            { id: "icecream", label: "Kem" },
+            { id: "drink", label: "Thức uống" }
         ],
     },
     {
@@ -155,6 +156,11 @@ export const shoppingViewHeaderMenuItems = [
         id: "dessert",
         label: "Tráng miệng",
         path: "/shop/listing",
+    },
+    {
+        id: "drink",
+        label: "Thức uống",
+        path: "/shop/listing",
     }
 ];
 
@@ -163,7 +169,8 @@ export const categoryOptionsMap = {
     "pizza": "Pizza", 
     "noodle": "Mỳ Ý",
     "dessert": "Món tráng miệng",
-    "icecream": "Kem"
+    "icecream": "Kem",
+    "drink": "Thức uống"
 };
 
 export const filterOptions = {
@@ -172,7 +179,8 @@ export const filterOptions = {
         { id: "pizza", label: "Pizza" },
         { id: "noodle", label: "Mỳ Ý" },
         { id: "dessert", label: "Món tráng miệng" },
-        { id: "icecream", label: "Kem" }
+        { id: "icecream", label: "Kem" },
+        { id: "drink", label: "Thức uống" }
     ]
 };
 
