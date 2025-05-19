@@ -1,6 +1,10 @@
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
+<<<<<<< HEAD
 import { categoryOptionsMap } from "@/config";
+=======
+import { brandOptionsMap, categoryOptionsMap } from "@/config";
+>>>>>>> origin/feature/rating-analysis
 import { Badge } from "../ui/badge";
 
 function ShoppingProductTile({
@@ -37,6 +41,12 @@ function ShoppingProductTile({
                         <span className="text-[16px] text-muted-foreground">
                             {categoryOptionsMap[product?.category]}
                         </span>
+<<<<<<< HEAD
+=======
+                        <span className="text-[16px] text-muted-foreground">
+                            {brandOptionsMap[product?.brand]}
+                        </span>
+>>>>>>> origin/feature/rating-analysis
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <span

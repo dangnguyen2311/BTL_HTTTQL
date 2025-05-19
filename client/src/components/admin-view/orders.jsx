@@ -8,8 +8,12 @@ import {
     TableCell,
     TableHead,
     TableHeader,
+<<<<<<< HEAD
     TableRow,   
 
+=======
+    TableRow,
+>>>>>>> origin/feature/rating-analysis
 } from "../ui/table";
 import AdminOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";

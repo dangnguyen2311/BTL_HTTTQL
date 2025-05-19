@@ -15,6 +15,11 @@ import {
     IceCreamCone,
     Images,
     Pizza,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    CloudLightning,
+    Heater,
+    Images,
     Shirt,
     ShirtIcon,
     ShoppingBasket,
@@ -26,8 +31,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+
     fetchAllFilteredProducts,
     fetchProductDetails,
+    fetchProductDetails,
+    fetchRecommendedProductsCollaborativeFiltering,
 } from "@/store/shop/products-slice";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +45,7 @@ import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
+
     { id: "fried-chicken", label: "Gà rán", icon: Drumstick },
     { id: "pizza", label: "Pizza", icon: Pizza },
     { id: "noodle", label: "Mỳ Ý", icon: ChefHat },
@@ -112,15 +121,21 @@ function ShoppingHome() {
     }, [featureImageList]);
 
     useEffect(() => {
-        dispatch(
-            fetchAllFilteredProducts({
-                filterParams: {},
-                sortParams: "price-lowtohigh",
-            })
-        );
-    }, [dispatch]);
 
-    console.log(productList, "productList");
+        console.log("User object:", user);
+        console.log("User ID:", user?.id);
+        if (user?.id) {
+            dispatch(fetchRecommendedProductsCollaborativeFiltering(user.id));
+        } else {
+            console.log("No user ID available, skipping recommendation fetch");
+        }
+    }, [dispatch, user]);
+
+    useEffect(() => {
+        console.log("Recommended Products:", recommendedProducts);
+        console.log("Is Loading:", isLoading);
+    }, [recommendedProducts, isLoading]);
+
 
     useEffect(() => {
         dispatch(getFeatureImages());
@@ -128,7 +143,9 @@ function ShoppingHome() {
 
     return (
         <div className="flex flex-col min-h-screen">
+
             {/* <div className="relative w-full h-[600px] overflow-hidden">
+
                 {featureImageList && featureImageList.length > 0
                     ? featureImageList.map((slide, index) => (
                         <img
@@ -166,6 +183,7 @@ function ShoppingHome() {
                     <ChevronRightIcon className="w-4 h-4" />
                 </Button>
             </div> */}
+
             <section className="py-12 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">
@@ -175,6 +193,7 @@ function ShoppingHome() {
                         {categoriesWithIcon.map((categoryItem) => (
                             <Card
                                 key={categoryItem.id}
+ư
                                 onClick={() =>
                                     handleNavigateToListingPage(categoryItem, "category")
                                 }
@@ -191,6 +210,7 @@ function ShoppingHome() {
             </section>
 
             {/* <section className="py-12 bg-gray-50">
+
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -209,23 +229,31 @@ function ShoppingHome() {
                 </div>
             </section> */}
 
+
             <section className="py-12">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">
                         Feature Products
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {productList && productList.length > 0
-                            ? productList.map((productItem) => (
+                    {isLoading ? (
+                        <p className="text-center">Loading recommendations...</p>
+                    ) : recommendedProducts && recommendedProducts.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {recommendedProducts.map((productItem) => (
+
                                 <ShoppingProductTile
                                     key={productItem._id}
                                     handleGetProductDetails={handleGetProductDetails}
                                     product={productItem}
                                     handleAddtoCart={handleAddtoCart}
                                 />
-                            ))
-                            : null}
-                    </div>
+
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center">No recommendations available. Check logs for details.</p>
+                    )}
+
                 </div>
             </section>
             <ProductDetailsDialog

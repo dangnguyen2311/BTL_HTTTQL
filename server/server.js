@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -7,6 +8,8 @@ const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
 const adminComboRouter = require("./routes/admin/combo-routes");
+
+const adminRatingRouter = require("./routes/admin/rating.routes");
 
 const shopProductsRouter = require("./routes/shop/products-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
@@ -24,11 +27,18 @@ mongoose
 .connect("mongodb+srv://nguyenquanghaidang2311:Dangdeptrai2311@food-ordering-managemen.2osml.mongodb.net/?retryWrites=true&w=majority&appName=food-ordering-management")
     // .connect("mongodb+srv://trankhanhhgvt:rwRKpbZCWCuot4pN@cluster0.ssefj.mongodb.net/")
     
+
     .then(() => console.log("MongoDB connected"))
     .catch((error) => console.log(error));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Middleware để log các request
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
 
 app.use(
     cors({
@@ -51,6 +61,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/admin/combo", adminComboRouter);
+app.use("/api/admin/ratings", adminRatingRouter);
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);

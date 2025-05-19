@@ -7,7 +7,10 @@ import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/products";
 import AdminOrders from "./pages/admin-view/orders";
 import AdminFeatures from "./pages/admin-view/features";
+
 import AdminCombo from "./pages/admin-view/combo";
+
+import AdminRatingAnalysis from "./pages/admin-view/rating-analysis";
 import ShoppingLayout from "./components/shopping-view/layout";
 import NotFound from "./pages/not-found";
 import ShoppingHome from "./pages/shopping-view/home";
@@ -26,7 +29,6 @@ import SearchProducts from "./pages/shopping-view/search";
 import AdminUsers from "./pages/admin-view/users";
 import AdminReviews from "./pages/admin-view/reviews";
 import RevenueStatistics from "./pages/admin-view/revenue";
-
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
     (state) => state.auth
@@ -80,6 +82,8 @@ function App() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="revenue" element={<RevenueStatistics />} />
+          <Route path="ratings" element={<AdminRatingAnalysis />} />
+
         </Route>
         <Route
           path="/shop"

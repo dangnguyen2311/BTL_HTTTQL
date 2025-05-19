@@ -6,7 +6,11 @@ function AuthLayout() {
             <div className="hidden lg:flex items-center justify-center bg-black w-1/2 px-12">
                 <div className="max-w-md space-y-6 text-center text-primary-foreground">
                     <h1 className="text-4xl font-extrabold tracking-tight">
+<<<<<<< HEAD
                         Chào mừng bạn đến với Jollibee
+=======
+                        Welcome to ECommerce Shopping
+>>>>>>> origin/feature/rating-analysis
                     </h1>
                 </div>
             </div>

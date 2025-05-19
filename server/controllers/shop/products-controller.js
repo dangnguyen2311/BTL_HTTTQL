@@ -4,12 +4,20 @@ const getFilteredProducts = async (req, res) => {
     try {
         const { category = [], sortBy = "price-lowtohigh" } = req.query;
 
+
         let filters = {};
 
         if (category.length) {
             filters.category = { $in: category.split(",") };
         }
 
+// <<<<<<< HEAD
+// =======
+//         if (brand.length) {
+//             filters.brand = { $in: brand.split(",") };
+//         }
+
+// >>>>>>> origin/feature/rating-analysis
         let sort = {};
 
         switch (sortBy) {
