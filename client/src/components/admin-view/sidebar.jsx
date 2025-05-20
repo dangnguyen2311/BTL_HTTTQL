@@ -4,12 +4,10 @@ import {
     LayoutDashboard,
     ShoppingBasket,
     Star,
-<<<<<<< HEAD
     UserSquare,
     Package,
     LineChart
-=======
->>>>>>> origin/feature/rating-analysis
+
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -29,46 +27,41 @@ const adminSidebarMenuItems = [
         icon: <ShoppingBasket />,
     },
     {
-<<<<<<< HEAD
         id: "combo",
         label: "Combo",
         path: "/admin/combo",
         icon: <Package />,
     },
     {
-=======
->>>>>>> origin/feature/rating-analysis
         id: "orders",
         label: "Orders",
         path: "/admin/orders",
         icon: <BadgeCheck />,
     },
-    {
-<<<<<<< HEAD
-        id: "users",
-        label: "Users",
-        path: "/admin/users",
-        icon: <UserSquare />,
-    },
-    {
-        id: "reviews",
-        label: "Reviews",
-        path: "/admin/reviews",
-        icon: <Star />,
-    },
+    // {
+    //     id: "users",
+    //     label: "Users",
+    //     path: "/admin/users",
+    //     icon: <UserSquare />,
+    // },
+    // {
+    //     id: "reviews",
+    //     label: "Reviews",
+    //     path: "/admin/reviews",
+    //     icon: <Star />,
+    // },
     {
         id: "revenue",
         label: "Revenue Statistics",
         path: "/admin/revenue",
         icon: <LineChart />,
-    }
-=======
+    },
+    {
         id: "ratings",
         label: "Rating Analysis",
         path: "/admin/ratings",
         icon: <Star />,
     },
->>>>>>> origin/feature/rating-analysis
 ];
 
 function MenuItems({ setOpen }) {

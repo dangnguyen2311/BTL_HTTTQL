@@ -139,13 +139,10 @@ function ShoppingHeader() {
         <header className="sticky top-0 z-40 w-full border-b bg-background">
             <div className="flex h-16 items-center justify-between px-4 md:px-6">
                 <Link to="/shop/home" className="flex items-center gap-2">
-<<<<<<< HEAD
+
                     <HousePlug className="h-6 w-6 text-red-500 font-bold text-2xl" />
                     <span className="font-bold text-red-500 text-2xl">Jollibee</span>
-=======
-                    <HousePlug className="h-6 w-6" />
-                    <span className="font-bold">Ecommerce</span>
->>>>>>> origin/feature/rating-analysis
+
                 </Link>
                 <Sheet>
                     <SheetTrigger asChild>

@@ -2,14 +2,42 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
     {
-        image: String,
-        title: String,
-        description: String,
-        category: String,
-        price: Number,
-        salePrice: Number,
-        totalStock: Number,
-        averageReview: Number,
+        image: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        description: {
+            type: String,
+            required: true
+        },
+        category: {
+            type: String,
+            required: true,
+            enum: ['fried-chicken', 'pizza', 'noodle', 'dessert', 'icecream', 'drink']
+        },
+        price: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        salePrice: {
+            type: Number,
+            min: 0,
+            default: null
+        },
+        totalStock: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        averageReview: {
+            type: Number,
+            default: 0
+        }
     },
     { timestamps: true }
 );

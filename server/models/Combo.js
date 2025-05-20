@@ -10,9 +10,18 @@ const comboSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true,
+        enum: ['fried-chicken', 'pizza', 'noodle', 'dessert', 'icecream', 'drink']
+    },
     price: {
         type: Number,
         required: true,
+        min: 0
+    },
+    salePrice: {
+        type: Number,
         min: 0
     },
     image: {

@@ -3,7 +3,7 @@ const Combo = require('../../models/Combo');
 // Add new combo
 exports.addCombo = async (req, res) => {
     try {
-        const { name, description, price, products, image, totalStock } = req.body;
+        const { name, description, price, products, image, totalStock, category, salePrice } = req.body;
         
         const newCombo = new Combo({
             name,
@@ -12,6 +12,8 @@ exports.addCombo = async (req, res) => {
             image,
             products,
             totalStock,
+            category,
+            salePrice,
             isActive : true
         });
 
@@ -71,7 +73,7 @@ exports.getComboById = async (req, res) => {
 // Update combo
 exports.updateCombo = async (req, res) => {
     try {
-        const { name, description, price, products, image, totalStock, salePrice } = req.body;
+        const { name, description, price, products, image, totalStock, salePrice, category } = req.body;
         
         const updatedCombo = await Combo.findByIdAndUpdate(
             req.params.id,
@@ -82,7 +84,8 @@ exports.updateCombo = async (req, res) => {
                 products,
                 image,
                 totalStock,
-                salePrice
+                salePrice,
+                category
             },
             { new: true, runValidators: true }
         ).populate('products');

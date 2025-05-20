@@ -16,28 +16,38 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { Fragment, useState } from "react";
+import { getRevenueStatistics } from "@/services/api";
+import { toast } from "sonner";
 
 function RevenueStatistics() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [statistics, setStatistics] = useState({
         totalRevenue: 0,
         totalOrders: 0,
         averageOrderValue: 0,
+        dailyRevenue: {}
     });
 
-    const handleGenerateStatistics = () => {
+    const handleGenerateStatistics = async () => {
         if (!startDate || !endDate) {
+            toast.error("Please select both start and end dates");
             return;
         }
 
-        // TODO: Replace with actual API call to fetch statistics
-        // This is mock data for demonstration
-        setStatistics({
-            totalRevenue: 15780.50,
-            totalOrders: 145,
-            averageOrderValue: 108.83,
-        });
+        try {
+            setLoading(true);
+            const response = await getRevenueStatistics(startDate, endDate);
+            if (response.success) {
+                setStatistics(response.data);
+                toast.success("Statistics generated successfully");
+            }
+        } catch (error) {
+            toast.error(error.message || "Failed to generate statistics");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -109,9 +119,9 @@ function RevenueStatistics() {
                             <Button 
                                 className="self-end"
                                 onClick={handleGenerateStatistics}
-                                disabled={!startDate || !endDate}
+                                disabled={!startDate || !endDate || loading}
                             >
-                                Generate Statistics
+                                {loading ? "Loading..." : "Generate Statistics"}
                             </Button>
                         </div>
 
@@ -123,7 +133,7 @@ function RevenueStatistics() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-2xl font-bold">
-                                        ${statistics.totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                        {statistics.totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 0 })} đ
                                     </p>
                                 </CardContent>
                             </Card>
@@ -145,11 +155,33 @@ function RevenueStatistics() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-2xl font-bold">
-                                        ${statistics.averageOrderValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                        {statistics.averageOrderValue.toLocaleString('en-US', { minimumFractionDigits: 0 })} đ
                                     </p>
                                 </CardContent>
                             </Card>
                         </div>
+
+                        {/* Daily Revenue Chart */}
+                        {Object.keys(statistics.dailyRevenue).length > 0 && (
+                            <Card className="mt-6">
+                                <CardHeader>
+                                    <CardTitle>Daily Revenue</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="h-[300px]">
+                                        {/* TODO: Add chart component here */}
+                                        <div className="grid grid-cols-7 gap-2">
+                                            {Object.entries(statistics.dailyRevenue).map(([date, revenue]) => (
+                                                <div key={date} className="text-center">
+                                                    <p className="text-sm text-gray-500">{format(new Date(date), 'MMM dd')}</p>
+                                                    <p className="font-semibold">{revenue.toFixed(0)} đ</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
                 </CardContent>
             </Card>

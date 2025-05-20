@@ -24,10 +24,6 @@ const initialFormData = {
     title: "",
     description: "",
     category: "",
-// <<<<<<< HEAD
-// =======
-//     brand: "",
-// >>>>>>> origin/feature/rating-analysis
     price: "",
     salePrice: "",
     totalStock: "",
@@ -94,13 +90,13 @@ function AdminProducts() {
 
     function isFormValid() {
 // <<<<<<< HEAD
-//         const requiredFields = ['title', 'description', 'category', 'price', 'totalStock'];
-//         return requiredFields.every(field => formData[field] !== "");
+        const requiredFields = ['title', 'description', 'category', 'price', 'totalStock'];
+        return requiredFields.every(field => formData[field] !== "");
 // =======
-        return Object.keys(formData)
-            .filter((currentKey) => currentKey !== "averageReview")
-            .map((key) => formData[key] !== "")
-            .every((item) => item);
+        // return Object.keys(formData)
+        //     .filter((currentKey) => currentKey !== "averageReview")
+        //     .map((key) => formData[key] !== "")
+        //     .every((item) => item);
     }
 
     useEffect(() => {

@@ -11,13 +11,8 @@ import {
     ChevronRightIcon,
     CloudLightning,
     Drumstick,
-    Heater,
     IceCreamCone,
-    Images,
     Pizza,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    CloudLightning,
     Heater,
     Images,
     Shirt,
@@ -31,18 +26,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-
     fetchAllFilteredProducts,
-    fetchProductDetails,
     fetchProductDetails,
     fetchRecommendedProductsCollaborativeFiltering,
 } from "@/store/shop/products-slice";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
+import ShoppingComboTile from "@/components/shopping-view/combo-tile";
 import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { getFeatureImages } from "@/store/common-slice";
+import { fetchAllCombos } from "@/store/admin/combo-slice";
+import ComboDetailsDialog from "@/components/shopping-view/combo-details";
 
 const categoriesWithIcon = [
 
@@ -67,15 +63,15 @@ function ShoppingHome() {
     const { productList, productDetails } = useSelector(
         (state) => state.shopProducts
     );
+    const { comboList } = useSelector((state) => state.adminCombo);
     const { featureImageList } = useSelector((state) => state.commonFeature);
-
     const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-
     const { user } = useSelector((state) => state.auth);
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { toast } = useToast();
+    const [openComboDetailsDialog, setOpenComboDetailsDialog] = useState(false);
+    const [selectedCombo, setSelectedCombo] = useState(null);
 
     function handleNavigateToListingPage(getCurrentItem, section) {
         sessionStorage.removeItem("filters");
@@ -108,6 +104,32 @@ function ShoppingHome() {
         });
     }
 
+    function handleGetComboDetails(getCurrentComboId) {
+        const combo = comboList.find(c => c._id === getCurrentComboId);
+        if (combo) {
+            setSelectedCombo(combo);
+            setOpenComboDetailsDialog(true);
+        }
+    }
+
+    function handleAddComboToCart(getCurrentComboId) {
+        dispatch(
+            addToCart({
+                userId: user?.id,
+                productId: getCurrentComboId,
+                quantity: 1,
+                isCombo: true
+            })
+        ).then((data) => {
+            if (data?.payload?.success) {
+                dispatch(fetchCartItems(user?.id));
+                toast({
+                    title: "Combo is added to cart",
+                });
+            }
+        });
+    }
+
     useEffect(() => {
         if (productDetails !== null) setOpenDetailsDialog(true);
     }, [productDetails]);
@@ -121,9 +143,8 @@ function ShoppingHome() {
     }, [featureImageList]);
 
     useEffect(() => {
-
-        console.log("User object:", user);
-        console.log("User ID:", user?.id);
+        dispatch(fetchAllCombos());
+        dispatch(getFeatureImages());
         if (user?.id) {
             dispatch(fetchRecommendedProductsCollaborativeFiltering(user.id));
         } else {
@@ -131,15 +152,10 @@ function ShoppingHome() {
         }
     }, [dispatch, user]);
 
-    useEffect(() => {
-        console.log("Recommended Products:", recommendedProducts);
-        console.log("Is Loading:", isLoading);
-    }, [recommendedProducts, isLoading]);
-
-
-    useEffect(() => {
-        dispatch(getFeatureImages());
-    }, [dispatch]);
+    // useEffect(() => {
+    //     console.log("Recommended Products:", recommendedProducts);
+    //     console.log("Is Loading:", isLoading);
+    // }, [recommendedProducts, isLoading]);
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -193,7 +209,6 @@ function ShoppingHome() {
                         {categoriesWithIcon.map((categoryItem) => (
                             <Card
                                 key={categoryItem.id}
-ư
                                 onClick={() =>
                                     handleNavigateToListingPage(categoryItem, "category")
                                 }
@@ -230,7 +245,7 @@ function ShoppingHome() {
             </section> */}
 
 
-            <section className="py-12">
+            {/* <section className="py-12">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">
                         Feature Products
@@ -255,11 +270,58 @@ function ShoppingHome() {
                     )}
 
                 </div>
+            </section> */}
+
+            <section className="py-12">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center mb-8">
+                        Featured Products
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {productList && productList.length > 0
+                            ? productList.map((productItem) => (
+                                <ShoppingProductTile
+                                    key={productItem._id}
+                                    handleGetProductDetails={handleGetProductDetails}
+                                    product={productItem}
+                                    handleAddtoCart={handleAddtoCart}
+                                />
+                            ))
+                            : null}
+                    </div>
+                </div>
             </section>
+
+            <section className="py-12 bg-gray-50">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center mb-8">
+                        Special Combos
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {comboList && comboList.length > 0
+                            ? comboList.map((comboItem) => (
+                                <ShoppingComboTile
+                                    key={comboItem._id}
+                                    combo={comboItem}
+                                    handleGetComboDetails={handleGetComboDetails}
+                                    handleAddtoCart={handleAddComboToCart}
+                                />
+                            ))
+                            : null}
+                    </div>
+                </div>
+            </section>
+
             <ProductDetailsDialog
                 open={openDetailsDialog}
                 setOpen={setOpenDetailsDialog}
                 productDetails={productDetails}
+            />
+
+            <ComboDetailsDialog
+                open={openComboDetailsDialog}
+                setOpen={setOpenComboDetailsDialog}
+                comboDetails={selectedCombo}
             />
         </div>
     );

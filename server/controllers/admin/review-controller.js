@@ -1,7 +1,3 @@
-// DÙNG COPILOT ĐỂ TẠO MỚI FILE NÀY
-// This file contains the controller functions for handling review-related requests in the admin panel.
-
-
 const Review = require('../models/review-model'); // Import your Review model
 
 // Get list of reviews within a specific time range
