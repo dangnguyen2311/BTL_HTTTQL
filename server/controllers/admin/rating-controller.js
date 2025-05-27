@@ -1,16 +1,27 @@
 const mongoose = require('mongoose');
-const Product = require('../models/Product');
-const Review = require('../models/Review');
+const Product = require('../../models/Product');
+const Review = require('../../models/Review');
 
 // Get rating statistics for all products
 exports.getRatingStats = async (req, res) => {
     try {
+        const { startDate, endDate } = req.query;
+        const matchStage = {
+            reviewValue: { $ne: null, $gte: 1, $lte: 5 }
+        };
+
+        // Add date range filter if provided
+        if (startDate && endDate) {
+            matchStage.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        }
+
         // Get rating distribution
         const distribution = await Review.aggregate([
             {
-                $match: {
-                    reviewValue: { $ne: null, $gte: 1, $lte: 5 }
-                }
+                $match: matchStage
             },
             {
                 $group: {
@@ -32,7 +43,7 @@ exports.getRatingStats = async (req, res) => {
 
         // Get top rated products
         const products = await Product.find().select('_id title');
-        const reviews = await Review.find({ reviewValue: { $ne: null, $gte: 1, $lte: 5 } });
+        const reviews = await Review.find(matchStage);
 
         const productRatings = {};
         reviews.forEach(review => {
@@ -58,7 +69,7 @@ exports.getRatingStats = async (req, res) => {
             .slice(0, 5);
 
         // Get recent reviews
-        const recentReviews = await Review.find({ reviewValue: { $ne: null, $gte: 1, $lte: 5 } })
+        const recentReviews = await Review.find(matchStage)
             .sort({ createdAt: -1 })
             .limit(5)
             .lean();
@@ -114,18 +125,29 @@ exports.getProductsList = async (req, res) => {
 exports.getProductRatingStats = async (req, res) => {
     try {
         const { productId } = req.params;
+        const { startDate, endDate } = req.query;
 
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        const matchStage = {
+            productId: productId,
+            reviewValue: { $ne: null, $gte: 1, $lte: 5 }
+        };
+
+        // Add date range filter if provided
+        if (startDate && endDate) {
+            matchStage.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        }
+
         const distribution = await Review.aggregate([
             {
-                $match: {
-                    productId: productId,
-                    reviewValue: { $ne: null, $gte: 1, $lte: 5 }
-                }
+                $match: matchStage
             },
             {
                 $group: {
@@ -147,10 +169,7 @@ exports.getProductRatingStats = async (req, res) => {
 
         const averageRating = await Review.aggregate([
             {
-                $match: {
-                    productId: productId,
-                    reviewValue: { $ne: null, $gte: 1, $lte: 5 }
-                }
+                $match: matchStage
             },
             {
                 $group: {
@@ -161,10 +180,7 @@ exports.getProductRatingStats = async (req, res) => {
             }
         ]);
 
-        const recentReviews = await Review.find({
-            productId,
-            reviewValue: { $ne: null, $gte: 1, $lte: 5 }
-        })
+        const recentReviews = await Review.find(matchStage)
             .sort({ createdAt: -1 })
             .limit(5);
 

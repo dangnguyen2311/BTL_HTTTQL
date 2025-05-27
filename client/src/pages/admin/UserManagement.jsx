@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers, deleteUser } from '../../services/api';
-import { setUserList } from '../../store/slices/userSlice';
+import { setUserList, setLoading, setError } from '../../store/slices/userSlice';
 import { Button, Table, Modal, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import UserForm from '../../components/admin/UserForm';
@@ -10,10 +10,9 @@ import UserForm from '../../components/admin/UserForm';
 const UserManagement = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { userList } = useSelector((state) => state.user);
+    // const { userList, loading, error } = useSelector((state) => state.user);
 
     useEffect(() => {
         fetchUsers();
@@ -21,15 +20,18 @@ const UserManagement = () => {
 
     const fetchUsers = async () => {
         try {
-            setLoading(true);
+            dispatch(setLoading(true));
+            dispatch(setError(null));
             const response = await getAllUsers();
             if (response.success) {
                 dispatch(setUserList(response.data));
             }
         } catch (error) {
-            message.error('Failed to fetch users');
+            console.error('Error fetching users:', error);
+            dispatch(setError(error.message || 'Failed to fetch users'));
+            message.error(error.message || 'Failed to fetch users');
         } finally {
-            setLoading(false);
+            dispatch(setLoading(false));
         }
     };
 
@@ -45,13 +47,17 @@ const UserManagement = () => {
 
     const handleDeleteUser = async (userId) => {
         try {
+            dispatch(setLoading(true));
             const response = await deleteUser(userId);
             if (response.success) {
                 message.success('User deleted successfully');
                 fetchUsers();
             }
         } catch (error) {
-            message.error('Failed to delete user');
+            console.error('Error deleting user:', error);
+            message.error(error.message || 'Failed to delete user');
+        } finally {
+            dispatch(setLoading(false));
         }
     };
 
@@ -94,6 +100,15 @@ const UserManagement = () => {
             ),
         },
     ];
+
+    // if (error) {
+    //     return (
+    //         <div className="p-6">
+    //             <div className="text-red-500 mb-4">{error}</div>
+    //             <Button onClick={fetchUsers}>Retry</Button>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="p-6">

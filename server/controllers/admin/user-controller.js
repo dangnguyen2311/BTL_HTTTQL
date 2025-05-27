@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find().select('-password');
+        console.log(users);
         res.status(200).json({
             success: true,
             data: users
@@ -22,6 +23,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getCustomerUsers = async (req, res) => {
     try {
         const customers = await User.find({ role: 'customer' }).select('-password');
+        console.log(customers);
         res.status(200).json({
             success: true,
             data: customers

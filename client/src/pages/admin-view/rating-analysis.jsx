@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import {
@@ -15,6 +15,12 @@ import {
     clearProductStats,
     fetchProductsList
 } from "@/store/rating-slice";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 function AdminRatingAnalysis() {
     const dispatch = useDispatch();
@@ -26,14 +32,19 @@ function AdminRatingAnalysis() {
         error
     } = useSelector((state) => state.rating);
 
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [filterDates, setFilterDates] = useState({ startDate: null, endDate: null });
+
     useEffect(() => {
         console.log('Component mounted, dispatching actions...');
-        dispatch(fetchRatingStats());
+        dispatch(fetchRatingStats(filterDates));
         dispatch(fetchProductsList());
         return () => {
             dispatch(clearProductStats());
         };
-    }, [dispatch]);
+    }, [dispatch, filterDates]);
 
     useEffect(() => {
         console.log('Products list updated:', productsList);
@@ -41,10 +52,18 @@ function AdminRatingAnalysis() {
 
     const handleProductSelect = (productId) => {
         console.log('Selected product ID:', productId);
+        setSelectedProduct(productId);
         if (productId) {
-            dispatch(fetchProductRatingStats(productId));
+            dispatch(fetchProductRatingStats({ productId, ...filterDates }));
         } else {
             dispatch(clearProductStats());
+        }
+    };
+
+    const handleApplyFilter = () => {
+        setFilterDates({ startDate, endDate });
+        if (selectedProduct) {
+            dispatch(fetchProductRatingStats({ productId: selectedProduct, startDate, endDate }));
         }
     };
 
@@ -66,7 +85,7 @@ function AdminRatingAnalysis() {
                         <CardTitle>Product Rating Analysis</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="mb-4">
+                        <div className="flex flex-col md:flex-row gap-4 mb-4">
                             <Select onValueChange={handleProductSelect}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a product" />
@@ -79,6 +98,61 @@ function AdminRatingAnalysis() {
                                     ))}
                                 </SelectContent>
                             </Select>
+
+                            <div className="flex gap-2">
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                "w-[240px] justify-start text-left font-normal",
+                                                !startDate && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {startDate ? format(startDate, "PPP") : "Start date"}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                        <Calendar
+                                            mode="single"
+                                            selected={startDate}
+                                            onSelect={setStartDate}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                "w-[240px] justify-start text-left font-normal",
+                                                !endDate && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {endDate ? format(endDate, "PPP") : "End date"}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                        <Calendar
+                                            mode="single"
+                                            selected={endDate}
+                                            onSelect={setEndDate}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+
+                                <Button 
+                                    onClick={handleApplyFilter}
+                                    className="px-4"
+                                >
+                                    Apply Filter
+                                </Button>
+                            </div>
                         </div>
 
                         {productStats && (
@@ -179,6 +253,9 @@ function AdminRatingAnalysis() {
                                         <span>{review.rating} ⭐</span>
                                     </div>
                                     <p className="text-sm text-gray-500">{review.comment}</p>
+                                    <p className="text-xs text-gray-400">
+                                        {new Date(review.createdAt).toLocaleDateString()}
+                                    </p>
                                 </div>
                             ))}
                         </div>

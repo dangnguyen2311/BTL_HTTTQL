@@ -80,15 +80,27 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 reviewMessage: reviewMsg,
                 reviewValue: rating,
             })
-        ).then((data) => {
-            if (data.payload.success) {
+        ).then((response) => {
+            const data = response.payload;
+            if (data && data.success) {
                 setRating(0);
                 setReviewMsg("");
                 dispatch(getReviews(productDetails?._id));
                 toast({
                     title: "Review added successfully!",
                 });
+            } else {
+                toast({
+                    title: data?.message || "Failed to add review, You need to buy this product first",
+                    variant: "destructive",
+                });
             }
+        }).catch((error) => {
+            console.error("Review error:", error);
+            toast({
+                title: error?.message || "Failed to add review",
+                variant: "destructive",
+            });
         });
     }
 

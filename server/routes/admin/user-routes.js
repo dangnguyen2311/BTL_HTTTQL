@@ -1,21 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../../controllers/admin/user-controller');
-// const { isAdmin } = require('../../middleware/auth');
-
-// Apply admin middleware to all routes
-// router.use(isAdmin);
 
 // Get all users
-router.get('/users', userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 // Add new user
-router.post('/users', userController.addUser);
+router.post('/', userController.addUser);
 
 // Update user
-router.put('/users/:id', userController.updateUser);
+router.put('/:id', userController.updateUser);
 
 // Delete user
-router.delete('/users/:id', userController.deleteUser);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

@@ -49,7 +49,8 @@ exports.getRevenueStatistics = async (req, res) => {
                 totalRevenue,
                 totalOrders,
                 averageOrderValue,
-                dailyRevenue
+                dailyRevenue, 
+                orders
             }
         });
     } catch (error) {

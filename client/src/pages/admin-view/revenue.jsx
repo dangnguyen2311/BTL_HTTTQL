@@ -8,16 +8,32 @@ import {
 } from "@/components/ui/card";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Dialog } from "@/components/ui/dialog";
+import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Calendar } from "lucide-react";
+import { Calendar, Eye } from "lucide-react";
 import { format } from "date-fns";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { getRevenueStatistics } from "@/services/api";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getOrderDetailsForAdmin,
+    resetOrderDetails,
+} from "@/store/admin/order-slice";
+import AdminOrderDetailsView from "@/components/admin-view/order-details";
 
 function RevenueStatistics() {
     const [startDate, setStartDate] = useState(null);
@@ -27,8 +43,12 @@ function RevenueStatistics() {
         totalRevenue: 0,
         totalOrders: 0,
         averageOrderValue: 0,
-        dailyRevenue: {}
+        dailyRevenue: {},
+        orders: []
     });
+    const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+    const { orderDetails } = useSelector((state) => state.adminOrder);
+    const dispatch = useDispatch();
 
     const handleGenerateStatistics = async () => {
         if (!startDate || !endDate) {
@@ -49,6 +69,16 @@ function RevenueStatistics() {
             setLoading(false);
         }
     };
+
+    const handleViewOrderDetails = (orderId) => {
+        dispatch(getOrderDetailsForAdmin(orderId));
+    };
+
+    useEffect(() => {
+        if (orderDetails !== null) {
+            setOpenDetailsDialog(true);
+        }
+    }, [orderDetails]);
 
     return (
         <div className="container mx-auto py-6">
@@ -169,7 +199,6 @@ function RevenueStatistics() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="h-[300px]">
-                                        {/* TODO: Add chart component here */}
                                         <div className="grid grid-cols-7 gap-2">
                                             {Object.entries(statistics.dailyRevenue).map(([date, revenue]) => (
                                                 <div key={date} className="text-center">
@@ -183,6 +212,74 @@ function RevenueStatistics() {
                             </Card>
                         )}
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Orders List */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Orders List</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Order ID</TableHead>
+                                <TableHead>Order Date</TableHead>
+                                <TableHead>Order Status</TableHead>
+                                <TableHead>Order Price</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {statistics.orders && statistics.orders.length > 0 ? (
+                                statistics.orders.map((order) => (
+                                    <TableRow key={order._id}>
+                                        <TableCell>{order._id}</TableCell>
+                                        <TableCell>{format(new Date(order.orderDate), 'PPP')}</TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                className={`py-1 px-3 ${
+                                                    order.orderStatus === "delivered"
+                                                        ? "bg-green-500"
+                                                        : order.orderStatus === "cancelled"
+                                                        ? "bg-red-600"
+                                                        : "bg-yellow-500"
+                                                }`}
+                                            >
+                                                {order.orderStatus}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>{order.totalAmount.toLocaleString('en-US')} đ</TableCell>
+                                        <TableCell>
+                                            <Dialog
+                                                open={openDetailsDialog}
+                                                onOpenChange={() => {
+                                                    setOpenDetailsDialog(false);
+                                                    dispatch(resetOrderDetails());
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleViewOrderDetails(order._id)}
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                </Button>
+                                                <AdminOrderDetailsView orderDetails={orderDetails} />
+                                            </Dialog>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-center">
+                                        No orders found
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
                 </CardContent>
             </Card>
         </div>

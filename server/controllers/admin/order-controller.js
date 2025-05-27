@@ -2,7 +2,7 @@ const Order = require("../../models/Order");
 
 const getAllOrdersOfAllUsers = async (req, res) => {
     try {
-        const orders = await Order.find({});
+        const orders = await Order.find({}).sort({ createdAt: -1 });;
 
         if (!orders.length) {
             return res.status(404).json({
@@ -28,7 +28,7 @@ const getOrderDetailsForAdmin = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).sort({ createdAt: -1 });;
 
         if (!order) {
             return res.status(404).json({
@@ -55,7 +55,7 @@ const updateOrderStatus = async (req, res) => {
         const { id } = req.params;
         const { orderStatus } = req.body;
 
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).sort({ createdAt: -1 });;
 
         if (!order) {
             return res.status(404).json({

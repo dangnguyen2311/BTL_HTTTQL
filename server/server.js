@@ -8,7 +8,7 @@ const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
 const adminComboRouter = require("./routes/admin/combo-routes");
 const adminUserRouter = require("./routes/admin/user-routes");
-const adminRatingRouter = require("./routes/admin/rating.routes");
+const adminRatingRouter = require("./routes/admin/rating-routes");
 const adminRevenueRouter = require("./routes/admin/revenue-routes");
 
 const shopProductsRouter = require("./routes/shop/products-routes");

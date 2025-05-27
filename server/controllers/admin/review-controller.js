@@ -14,7 +14,7 @@ exports.getReviewsByDateRange = async (req, res) => {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate),
             },
-        });
+        }).sort({ createdAt: -1 });
 
         res.status(200).json(reviews);
     } catch (error) {
@@ -27,7 +27,7 @@ exports.getReviewDetails = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const review = await Review.findById(id);
+        const review = await Review.findById(id).sort({ createdAt: -1 });
 
         if (!review) {
             return res.status(404).json({ message: 'Review not found.' });

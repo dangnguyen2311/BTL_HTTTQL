@@ -42,7 +42,7 @@ function ShoppingOrders() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Order History</CardTitle>
+                <CardTitle>Your Order History</CardTitle>
             </CardHeader>
             <CardContent>
                 <Table>

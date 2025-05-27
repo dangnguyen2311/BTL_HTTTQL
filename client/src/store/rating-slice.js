@@ -3,9 +3,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // Async thunk để lấy thống kê đánh giá tổng quan
 export const fetchRatingStats = createAsyncThunk(
     "rating/fetchStats",
-    async (_, { rejectWithValue }) => {
+    async ({ startDate, endDate } = {}, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:5000/api/admin/ratings/stats", {
+            const queryParams = new URLSearchParams();
+            if (startDate) queryParams.append('startDate', startDate);
+            if (endDate) queryParams.append('endDate', endDate);
+
+            const response = await fetch(`http://localhost:5000/api/admin/ratings/stats?${queryParams.toString()}`, {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,9 +35,13 @@ export const fetchRatingStats = createAsyncThunk(
 // Async thunk để lấy thống kê đánh giá của một sản phẩm cụ thể
 export const fetchProductRatingStats = createAsyncThunk(
     "rating/fetchProductStats",
-    async (productId, { rejectWithValue }) => {
+    async ({ productId, startDate, endDate }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/ratings/stats/product/${productId}`, {
+            const queryParams = new URLSearchParams();
+            if (startDate) queryParams.append('startDate', startDate);
+            if (endDate) queryParams.append('endDate', endDate);
+
+            const response = await fetch(`http://localhost:5000/api/admin/ratings/stats/product/${productId}?${queryParams.toString()}`, {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',

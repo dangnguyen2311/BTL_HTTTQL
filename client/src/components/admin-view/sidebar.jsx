@@ -38,12 +38,12 @@ const adminSidebarMenuItems = [
         path: "/admin/orders",
         icon: <BadgeCheck />,
     },
-    // {
-    //     id: "users",
-    //     label: "Users",
-    //     path: "/admin/users",
-    //     icon: <UserSquare />,
-    // },
+    {
+        id: "users",
+        label: "Users",
+        path: "/admin/users",
+        icon: <UserSquare />,
+    },
     // {
     //     id: "reviews",
     //     label: "Reviews",
