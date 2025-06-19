@@ -1,9 +1,10 @@
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const Combo = require("../../models/Combo");
 
 const addToCart = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const { userId, productId, quantity, isCombo } = req.body;
 
         if (!userId || !productId || quantity <= 0) {
             return res.status(400).json({
@@ -12,12 +13,18 @@ const addToCart = async (req, res) => {
             });
         }
 
-        const product = await Product.findById(productId);
+        // Check if product/combo exists
+        let item;
+        if (isCombo) {
+            item = await Combo.findById(productId);
+        } else {
+            item = await Product.findById(productId);
+        }
 
-        if (!product) {
+        if (!item) {
             return res.status(404).json({
                 success: false,
-                message: "Product not found",
+                message: isCombo ? "Combo not found" : "Product not found",
             });
         }
 
@@ -32,7 +39,11 @@ const addToCart = async (req, res) => {
         );
 
         if (findCurrentProductIndex === -1) {
-            cart.items.push({ productId, quantity });
+            cart.items.push({ 
+                productId, 
+                quantity,
+                isCombo: isCombo || false
+            });
         } else {
             cart.items[findCurrentProductIndex].quantity += quantity;
         }
@@ -62,10 +73,7 @@ const fetchCartItems = async (req, res) => {
             });
         }
 
-        const cart = await Cart.findOne({ userId }).populate({
-            path: "items.productId",
-            select: "image title price salePrice",
-        });
+        const cart = await Cart.findOne({ userId });
 
         if (!cart) {
             return res.status(404).json({
@@ -74,29 +82,43 @@ const fetchCartItems = async (req, res) => {
             });
         }
 
-        const validItems = cart.items.filter(
-            (productItem) => productItem.productId
+        // Populate products and combos separately
+        const populatedItems = await Promise.all(
+            cart.items.map(async (item) => {
+                if (item.isCombo) {
+                    const combo = await Combo.findById(item.productId);
+                    return {
+                        productId: combo?._id,
+                        image: combo?.image,
+                        title: combo?.name,
+                        price: combo?.price,
+                        salePrice: combo?.salePrice,
+                        quantity: item.quantity,
+                        isCombo: true
+                    };
+                } else {
+                    const product = await Product.findById(item.productId);
+                    return {
+                        productId: product?._id,
+                        image: product?.image,
+                        title: product?.title,
+                        price: product?.price,
+                        salePrice: product?.salePrice,
+                        quantity: item.quantity,
+                        isCombo: false
+                    };
+                }
+            })
         );
 
-        if (validItems.length < cart.items.length) {
-            cart.items = validItems;
-            await cart.save();
-        }
-
-        const populateCartItems = validItems.map((item) => ({
-            productId: item.productId._id,
-            image: item.productId.image,
-            title: item.productId.title,
-            price: item.productId.price,
-            salePrice: item.productId.salePrice,
-            quantity: item.quantity,
-        }));
+        // Filter out items where product/combo was not found
+        const validItems = populatedItems.filter(item => item.productId);
 
         res.status(200).json({
             success: true,
             data: {
                 ...cart._doc,
-                items: populateCartItems,
+                items: validItems,
             },
         });
     } catch (error) {

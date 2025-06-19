@@ -19,6 +19,14 @@ exports.getRevenueStatistics = async (req, res) => {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
 
+        // Check if start date is greater than end date
+        if (start > end) {
+            return res.status(400).json({
+                success: false,
+                message: "Start date cannot be greater than end date"
+            });
+        }
+
         // Find all orders within the date range
         const orders = await Order.find({
             orderDate: {

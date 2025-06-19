@@ -65,12 +65,19 @@ function AdminOrdersView() {
                                     <TableCell>{orderItem?.orderDate.split("T")[0]}</TableCell>
                                     <TableCell>
                                         <Badge
-                                            className={`py-1 px-3 ${orderItem?.orderStatus === "confirmed"
+                                            className={`py-1 px-3 ${
+                                                orderItem?.orderStatus === "delivered"
                                                     ? "bg-green-500"
-                                                    : orderItem?.orderStatus === "rejected"
-                                                        ? "bg-red-600"
-                                                        : "bg-black"
-                                                }`}
+                                                    : orderItem?.orderStatus === "cancelled"
+                                                    ? "bg-red-600"
+                                                    : orderItem?.orderStatus === "confirmed"
+                                                    ? "bg-blue-500"
+                                                    : orderItem?.orderStatus === "processing"
+                                                    ? "bg-yellow-500"
+                                                    : orderItem?.orderStatus === "shipped"
+                                                    ? "bg-purple-500"
+                                                    : "bg-gray-500"
+                                            }`}
                                         >
                                             {orderItem?.orderStatus}
                                         </Badge>

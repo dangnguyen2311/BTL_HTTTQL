@@ -27,7 +27,8 @@ import { Calendar, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { Fragment, useState, useEffect } from "react";
 import { getRevenueStatistics } from "@/services/api";
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getOrderDetailsForAdmin,
@@ -37,6 +38,7 @@ import AdminOrderDetailsView from "@/components/admin-view/order-details";
 
 function RevenueStatistics() {
     const [startDate, setStartDate] = useState(null);
+    const {toast} = useToast();
     const [endDate, setEndDate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [statistics, setStatistics] = useState({
@@ -51,8 +53,24 @@ function RevenueStatistics() {
     const dispatch = useDispatch();
 
     const handleGenerateStatistics = async () => {
+        console.log("Clicked generate");
         if (!startDate || !endDate) {
-            toast.error("Please select both start and end dates");
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Please select both start and end dates"
+            });
+            return;
+        }
+        console.log("Start:", startDate, "End:", endDate); 
+        
+        // Compare dates directly since they are already Date objects
+        if (startDate > endDate) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Start date cannot be greater than end date"
+            });
             return;
         }
 

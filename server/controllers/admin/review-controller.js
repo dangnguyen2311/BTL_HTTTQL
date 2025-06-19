@@ -9,10 +9,25 @@ exports.getReviewsByDateRange = async (req, res) => {
             return res.status(400).json({ message: 'Start date and end date are required.' });
         }
 
+        // Convert dates to start and end of day
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        // Check if start date is greater than end date
+        if (start > end) {
+            return res.status(400).json({
+                success: false,
+                message: "Start date cannot be greater than end date"
+            });
+        }
+
         const reviews = await Review.find({
             createdAt: {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate),
+                $gte: start,
+                $lte: end,
             },
         }).sort({ createdAt: -1 });
 

@@ -43,7 +43,7 @@ function AdminOrderDetailsView({ orderDetails }) {
     }
 
     return (
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <div className="grid gap-6">
                 <div className="grid gap-2">
                     <div className="flex mt-6 items-center justify-between">
@@ -70,12 +70,19 @@ function AdminOrderDetailsView({ orderDetails }) {
                         <p className="font-medium">Order Status</p>
                         <Label>
                             <Badge
-                                className={`py-1 px-3 ${orderDetails?.orderStatus === "confirmed"
+                                className={`py-1 px-3 ${
+                                    orderDetails?.orderStatus === "delivered"
                                         ? "bg-green-500"
-                                        : orderDetails?.orderStatus === "rejected"
-                                            ? "bg-red-600"
-                                            : "bg-black"
-                                    }`}
+                                        : orderDetails?.orderStatus === "cancelled"
+                                        ? "bg-red-600"
+                                        : orderDetails?.orderStatus === "confirmed"
+                                        ? "bg-blue-500"
+                                        : orderDetails?.orderStatus === "processing"
+                                        ? "bg-yellow-500"
+                                        : orderDetails?.orderStatus === "shipped"
+                                        ? "bg-purple-500"
+                                        : "bg-gray-500"
+                                }`}
                             >
                                 {orderDetails?.orderStatus}
                             </Badge>
@@ -89,7 +96,7 @@ function AdminOrderDetailsView({ orderDetails }) {
                         <ul className="grid gap-3">
                             {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                                 ? orderDetails?.cartItems.map((item) => (
-                                    <li className="flex items-center justify-between">
+                                    <li key={item._id} className="flex items-center justify-between">
                                         <span>Title: {item.title}</span>
                                         <span>Quantity: {item.quantity}</span>
                                         <span>Price: ${item.price}</span>
@@ -122,10 +129,10 @@ function AdminOrderDetailsView({ orderDetails }) {
                                 componentType: "select",
                                 options: [
                                     { id: "pending", label: "Pending" },
-                                    { id: "inProcess", label: "In Process" },
-                                    { id: "inShipping", label: "In Shipping" },
+                                    { id: "processing", label: "Processing" },
+                                    { id: "shipped", label: "Shipped" },
                                     { id: "delivered", label: "Delivered" },
-                                    { id: "rejected", label: "Rejected" },
+                                    { id: "cancelled", label: "Cancelled" },
                                 ],
                             },
                         ]}

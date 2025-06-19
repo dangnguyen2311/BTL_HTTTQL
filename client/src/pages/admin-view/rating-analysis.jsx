@@ -21,8 +21,11 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+// import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 
 function AdminRatingAnalysis() {
+    const {toast} = useToast();
     const dispatch = useDispatch();
     const {
         overallStats,
@@ -61,6 +64,14 @@ function AdminRatingAnalysis() {
     };
 
     const handleApplyFilter = () => {
+        if (startDate && endDate && startDate > endDate) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Start date cannot be greater than end date"
+            });
+            return;
+        }
         setFilterDates({ startDate, endDate });
         if (selectedProduct) {
             dispatch(fetchProductRatingStats({ productId: selectedProduct, startDate, endDate }));
